@@ -47,19 +47,30 @@
     <div class="form-group">
       <label>Avatar (tùy chọn)</label>
       @php
-        $defaultAvatar = 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=facearea&w=120&h=120&q=80';
+        $defaultAvatar = asset('images/avatar/default-avatar.png');
       @endphp
-      <a href="{{ $defaultAvatar }}" target="_blank" rel="noopener" data-image-preview-link>
-        <img id="register-avatar-preview" class="image-preview" src="{{ $defaultAvatar }}" alt="Avatar preview" />
-      </a>
-      <input
-        class="input"
-        type="file"
-        name="avatar"
-        accept="image/*"
-        data-image-preview-input
-        data-image-preview-target="register-avatar-preview"
-      />
+      <div class="avatar-upload">
+        <a href="{{ $defaultAvatar }}" target="_blank" rel="noopener" data-image-preview-link>
+          <img id="register-avatar-preview" class="image-preview" src="{{ $defaultAvatar }}" alt="Avatar preview" />
+        </a>
+        <div>
+          <div class="file-upload">
+            <input
+              class="file-input"
+              id="register-avatar-input"
+              type="file"
+              name="avatar"
+              accept="image/*"
+              data-image-preview-input
+              data-image-preview-target="register-avatar-preview"
+              data-file-name-target="register-avatar-name"
+            />
+            <label class="file-button" for="register-avatar-input">Chọn ảnh</label>
+            <span id="register-avatar-name" class="file-name">Chưa chọn ảnh</span>
+          </div>
+          <div class="file-hint">PNG, JPG tối đa 2MB.</div>
+        </div>
+      </div>
     </div>
     <button class="btn btn-primary" type="submit">Đăng ký</button>
     <div class="meta">

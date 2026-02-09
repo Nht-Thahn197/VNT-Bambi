@@ -74,12 +74,36 @@
       </div>
       <div class="form-group">
         <label>Thumbnail</label>
-        <input class="input" type="file" name="thumbnail" accept="image/*" />
-        @if ($article->thumbnail)
-          <div class="post-meta" style="margin-top: 6px;">
-            Hiện tại: {{ $article->thumbnail }}
+        @php
+          $previewThumbnail = $article->thumbnail_url ?: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+        @endphp
+        <div class="avatar-upload">
+          <a href="{{ $previewThumbnail }}" target="_blank" rel="noopener" data-image-preview-link>
+            <img
+              id="admin-thumbnail-edit-preview"
+              class="image-preview"
+              src="{{ $previewThumbnail }}"
+              alt="Thumbnail preview"
+            />
+          </a>
+          <div>
+            <div class="file-upload">
+              <input
+                class="file-input"
+                id="admin-thumbnail-edit"
+                type="file"
+                name="thumbnail"
+                accept="image/*"
+                data-image-preview-input
+                data-image-preview-target="admin-thumbnail-edit-preview"
+                data-file-name-target="admin-thumbnail-edit-name"
+              />
+              <label class="file-button" for="admin-thumbnail-edit">Chọn ảnh</label>
+              <span id="admin-thumbnail-edit-name" class="file-name">Chưa chọn ảnh</span>
+            </div>
+            <div class="file-hint">PNG, JPG tối đa 4MB.</div>
           </div>
-        @endif
+        </div>
       </div>
       <div class="form-group">
         <label>Nội dung</label>

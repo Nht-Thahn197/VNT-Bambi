@@ -18,7 +18,7 @@
   @endif
 
   <section class="card">
-    <form method="POST" action="{{ route('articles.store') }}" enctype="multipart/form-data">
+    <form class="form-stack form-stack--loose" method="POST" action="{{ route('articles.store') }}" enctype="multipart/form-data">
       @csrf
       <div class="form-group">
         <label>Tiêu đề</label>
@@ -63,7 +63,36 @@
       </div>
       <div class="form-group">
         <label>Thumbnail (tùy chọn)</label>
-        <input class="input" type="file" name="thumbnail" accept="image/*" />
+        @php
+          $previewThumbnail = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+        @endphp
+        <div class="avatar-upload">
+          <a href="{{ $previewThumbnail }}" target="_blank" rel="noopener" data-image-preview-link>
+            <img
+              id="article-thumbnail-preview"
+              class="image-preview"
+              src="{{ $previewThumbnail }}"
+              alt="Thumbnail preview"
+            />
+          </a>
+          <div>
+            <div class="file-upload">
+              <input
+                class="file-input"
+                id="article-thumbnail-input"
+                type="file"
+                name="thumbnail"
+                accept="image/*"
+                data-image-preview-input
+                data-image-preview-target="article-thumbnail-preview"
+                data-file-name-target="article-thumbnail-name"
+              />
+              <label class="file-button" for="article-thumbnail-input">Chọn ảnh</label>
+              <span id="article-thumbnail-name" class="file-name">Chưa chọn ảnh</span>
+            </div>
+            <div class="file-hint">PNG, JPG tối đa 4MB.</div>
+          </div>
+        </div>
       </div>
       <div class="form-group">
         <label>Nội dung</label>

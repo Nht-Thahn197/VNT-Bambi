@@ -1,12 +1,16 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
+  @php
+    $selectedTags = old('tags', $post->tags->pluck('id')->all());
+  @endphp
+
   <div class="content-header">
     <div>
-      <h1>Thêm bài viết</h1>
-      <div class="post-meta">Tạo bài viết mới.</div>
+      <h1>Sửa bài viết</h1>
+      <div class="post-meta">Cập nhật nội dung bài viết của bạn.</div>
     </div>
-    <a class="btn btn-outline" href="{{ route('admin.articles.index') }}">Quay lại</a>
+    <a class="btn btn-outline" href="{{ route('profile.show') }}">Quay lại</a>
   </div>
 
   @if ($errors->any())
@@ -18,15 +22,16 @@
   @endif
 
   <section class="card">
-    <form class="form-stack" method="POST" action="{{ route('admin.articles.store') }}" enctype="multipart/form-data">
+    <form class="form-stack form-stack--loose" method="POST" action="{{ route('articles.update', $post) }}" enctype="multipart/form-data">
       @csrf
+      @method('PUT')
       <div class="form-group">
         <label>Tiêu đề</label>
         <input
           class="input"
           type="text"
           name="title"
-          value="{{ old('title') }}"
+          value="{{ old('title', $post->title) }}"
           placeholder="Nhập tiêu đề bài viết"
           required
           autofocus
@@ -37,17 +42,10 @@
         <select class="input" name="category_id" required>
           <option value="">Chọn chuyên mục</option>
           @foreach ($categories as $category)
-            <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>
+            <option value="{{ $category->id }}" @selected(old('category_id', $post->category_id) == $category->id)>
               {{ $category->name }}
             </option>
           @endforeach
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Trạng thái</label>
-        <select class="input" name="status" required>
-          <option value="1" @selected(old('status', 1) == 1)>Xuất bản</option>
-          <option value="0" @selected(old('status') === 0 || old('status') === '0')>Nháp</option>
         </select>
       </div>
       <div class="form-group">
@@ -59,7 +57,7 @@
                 type="checkbox"
                 name="tags[]"
                 value="{{ $tag->id }}"
-                @checked(in_array($tag->id, old('tags', [])))
+                @checked(in_array($tag->id, $selectedTags))
               />
               <span>#{{ $tag->name }}</span>
             </label>
@@ -69,14 +67,14 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Thumbnail</label>
+        <label>Thumbnail (tùy chọn)</label>
         @php
-          $previewThumbnail = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+          $previewThumbnail = $post->thumbnail_url ?: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
         @endphp
         <div class="avatar-upload">
           <a href="{{ $previewThumbnail }}" target="_blank" rel="noopener" data-image-preview-link>
             <img
-              id="admin-thumbnail-preview"
+              id="article-thumbnail-edit-preview"
               class="image-preview"
               src="{{ $previewThumbnail }}"
               alt="Thumbnail preview"
@@ -86,16 +84,16 @@
             <div class="file-upload">
               <input
                 class="file-input"
-                id="admin-thumbnail-input"
+                id="article-thumbnail-edit"
                 type="file"
                 name="thumbnail"
                 accept="image/*"
                 data-image-preview-input
-                data-image-preview-target="admin-thumbnail-preview"
-                data-file-name-target="admin-thumbnail-name"
+                data-image-preview-target="article-thumbnail-edit-preview"
+                data-file-name-target="article-thumbnail-edit-name"
               />
-              <label class="file-button" for="admin-thumbnail-input">Chọn ảnh</label>
-              <span id="admin-thumbnail-name" class="file-name">Chưa chọn ảnh</span>
+              <label class="file-button" for="article-thumbnail-edit">Chọn ảnh</label>
+              <span id="article-thumbnail-edit-name" class="file-name">Chưa chọn ảnh</span>
             </div>
             <div class="file-hint">PNG, JPG tối đa 4MB.</div>
           </div>
@@ -109,9 +107,9 @@
           rows="10"
           placeholder="Nhập nội dung bài viết"
           required
-        >{{ old('content') }}</textarea>
+        >{{ old('content', $post->content) }}</textarea>
       </div>
-      <button class="btn btn-primary" type="submit">Lưu bài viết</button>
+      <button class="btn btn-primary" type="submit">Cập nhật</button>
     </form>
   </section>
 @endsection

@@ -2,8 +2,7 @@
     $displayName = $user?->user_name ?? 'Khách';
     $displayRole = $user?->role ?? 'Thành viên';
     $displayStatus = $user && $user->status ? 'Đang hoạt động' : 'Đã khóa';
-    $avatar = $user?->avatar_url
-        ?? 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=facearea&w=160&h=160&q=80';
+    $avatar = $user?->avatar_url ?? asset('images/avatar/default-avatar.png');
     $metrics = array_merge(
         ['articles' => 0, 'articles_week' => 0, 'comments' => 0, 'categories' => 0],
         is_array($metrics ?? null) ? $metrics : []

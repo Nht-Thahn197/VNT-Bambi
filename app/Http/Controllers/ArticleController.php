@@ -34,13 +34,13 @@ class ArticleController extends Controller
 
         $thumbnailPath = null;
         if ($request->hasFile('thumbnail')) {
-            $thumbDir = public_path('uploads/thumbnails');
+            $thumbDir = public_path('images/thumbnail');
             File::ensureDirectoryExists($thumbDir);
 
             $file = $request->file('thumbnail');
             $filename = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
             $file->move($thumbDir, $filename);
-            $thumbnailPath = '/uploads/thumbnails/'.$filename;
+            $thumbnailPath = '/images/thumbnail/'.$filename;
         }
 
         $article = Article::create([
@@ -67,10 +67,110 @@ class ArticleController extends Controller
             ->with('success', 'Dang bai viet thanh cong.');
     }
 
+    public function edit(Article $article)
+    {
+        $this->ensureOwner($article);
+        $article->load('tags');
+
+        return view('articles.edit', $this->sharedData() + [
+            'title' => 'BambiBlog · Sửa bài viết',
+            'post' => $article,
+        ]);
+    }
+
+    public function update(Request $request, Article $article)
+    {
+        $this->ensureOwner($article);
+
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'content' => ['required', 'string'],
+            'category_id' => ['required', 'integer', 'exists:categories,id'],
+            'thumbnail' => ['nullable', 'image', 'max:4096'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['integer', 'exists:tags,id'],
+        ]);
+
+        $thumbnailPath = $article->thumbnail;
+        if ($request->hasFile('thumbnail')) {
+            $thumbDir = public_path('images/thumbnail');
+            File::ensureDirectoryExists($thumbDir);
+
+            $file = $request->file('thumbnail');
+            $filename = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
+            $file->move($thumbDir, $filename);
+            $thumbnailPath = '/images/thumbnail/'.$filename;
+
+            if ($article->thumbnail) {
+                $normalized = ltrim($article->thumbnail, '/');
+                if (
+                    str_starts_with($normalized, 'uploads/thumbnails/')
+                    || str_starts_with($normalized, 'images/thumbnail/')
+                ) {
+                    $oldPath = public_path($normalized);
+                    if (File::exists($oldPath)) {
+                        File::delete($oldPath);
+                    }
+                }
+            }
+        }
+
+        $article->update([
+            'title' => $data['title'],
+            'content' => $data['content'],
+            'category_id' => (int) $data['category_id'],
+            'thumbnail' => $thumbnailPath,
+        ]);
+
+        $article->tags()->sync($data['tags'] ?? []);
+
+        return redirect()
+            ->route('articles.show', $article)
+            ->with('success', 'Cập nhật bài viết thành công.');
+    }
+
+    public function destroy(Article $article)
+    {
+        $this->ensureOwner($article);
+
+        if ($article->thumbnail) {
+            $normalized = ltrim($article->thumbnail, '/');
+            if (
+                str_starts_with($normalized, 'uploads/thumbnails/')
+                || str_starts_with($normalized, 'images/thumbnail/')
+            ) {
+                $thumbPath = public_path($normalized);
+                if (File::exists($thumbPath)) {
+                    File::delete($thumbPath);
+                }
+            }
+        }
+
+        $article->comments()->delete();
+        $article->tags()->detach();
+        $article->likes()->detach();
+        $article->shares()->detach();
+        $article->delete();
+
+        return redirect()
+            ->route('profile.show')
+            ->with('success', 'Xóa bài viết thành công.');
+    }
+
     public function index(Request $request)
     {
+        $userId = $request->user()?->id ?? 0;
+
         $query = Article::with(['user', 'category', 'tags'])
-            ->withCount('comments')
+            ->withCount(['comments', 'likes', 'shares'])
+            ->withCount([
+                'likes as liked_by_me' => function ($sub) use ($userId) {
+                    $sub->where('user_id', $userId);
+                },
+                'shares as shared_by_me' => function ($sub) use ($userId) {
+                    $sub->where('user_id', $userId);
+                },
+            ])
             ->where('status', 1);
 
         if ($request->filled('q')) {
@@ -107,7 +207,19 @@ class ArticleController extends Controller
 
     public function show(Article $article)
     {
-        $article->load(['user', 'category', 'tags'])->loadCount('comments');
+        $userId = request()->user()?->id ?? 0;
+
+        $article->load(['user', 'category', 'tags'])->loadCount([
+            'comments',
+            'likes',
+            'shares',
+            'likes as liked_by_me' => function ($sub) use ($userId) {
+                $sub->where('user_id', $userId);
+            },
+            'shares as shared_by_me' => function ($sub) use ($userId) {
+                $sub->where('user_id', $userId);
+            },
+        ]);
 
         $comments = Comment::with('user')
             ->where('article_id', $article->id)
@@ -119,5 +231,13 @@ class ArticleController extends Controller
             'post' => $article,
             'comments' => $comments,
         ]);
+    }
+
+    private function ensureOwner(Article $article): void
+    {
+        $userId = Auth::id();
+        if (! $userId || $article->user_id !== $userId) {
+            abort(403);
+        }
     }
 }

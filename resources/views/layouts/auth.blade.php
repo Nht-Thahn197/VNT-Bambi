@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ $title ?? 'BambiBlog Auth' }}</title>
+    <link rel="icon" href="{{ asset('favicon-bambi.ico') }}" />
     <link rel="stylesheet" href="{{ asset('css/blog.css') }}" />
   </head>
   <body class="auth-body">

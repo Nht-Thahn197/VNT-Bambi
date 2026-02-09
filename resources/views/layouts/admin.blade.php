@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ $title ?? 'BambiBlog Admin' }}</title>
+    <link rel="icon" href="{{ asset('favicon-bambi.ico') }}" />
     <link rel="stylesheet" href="{{ asset('css/blog.css') }}" />
   </head>
   <body class="admin-body">
@@ -43,5 +44,6 @@
       </main>
     </div>
     <script src="{{ asset('js/custom-select.js') }}" defer></script>
+    <script src="{{ asset('js/image-preview.js') }}" defer></script>
   </body>
 </html>

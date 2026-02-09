@@ -46,9 +46,42 @@ class Article extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    public function likes(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'article_likes', 'article_id', 'user_id');
+    }
+
+    public function shares(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'article_shares', 'article_id', 'user_id');
+    }
+
     public function getExcerptAttribute(): string
     {
         return Str::limit(strip_tags($this->content ?? ''), 160);
+    }
+
+    public function getThumbnailUrlAttribute(): ?string
+    {
+        $thumbnail = $this->thumbnail;
+
+        if (! $thumbnail) {
+            return null;
+        }
+
+        if (str_starts_with($thumbnail, 'http')) {
+            return $thumbnail;
+        }
+
+        $normalized = ltrim($thumbnail, '/');
+
+        if (app()->runningInConsole()) {
+            return '/'.$normalized;
+        }
+
+        $base = request()->getSchemeAndHttpHost().request()->getBaseUrl();
+
+        return rtrim($base, '/').'/'.$normalized;
     }
 
     public function getReadingTimeAttribute(): string

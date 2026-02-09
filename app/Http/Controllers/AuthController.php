@@ -63,7 +63,7 @@ class AuthController extends Controller
             'avatar' => ['nullable', 'image', 'max:2048'],
         ]);
 
-        $avatarPath = null;
+        $avatarPath = 'images/avatar/default-avatar.png';
         if ($request->hasFile('avatar')) {
             $avatarDir = public_path('images/avatar');
             File::ensureDirectoryExists($avatarDir);
@@ -87,7 +87,7 @@ class AuthController extends Controller
         $user->email = $validated['email'];
         $user->password = Hash::make($validated['password']);
 
-        if ($avatarPath && Schema::hasColumn('users', 'avatar')) {
+        if (Schema::hasColumn('users', 'avatar')) {
             $user->avatar = $avatarPath;
         }
 

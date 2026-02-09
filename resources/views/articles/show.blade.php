@@ -11,10 +11,10 @@
     <button class="btn btn-outline">Lưu bài</button>
   </div>
 
-  <article class="card post-card">
+  <article class="card post-card" data-article-id="{{ $post->id }}">
     <div class="post-header">
       <div style="display: flex; gap: 12px; align-items: center;">
-        <img class="avatar" src="{{ $post->user?->avatar_url ?? 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=facearea&w=120&h=120&q=80' }}" alt="avatar" />
+        <img class="avatar" src="{{ $post->user?->avatar_url ?? asset('images/avatar/default-avatar.png') }}" alt="avatar" />
         <div>
           <div style="font-weight: 600;">{{ $post->user?->user_name ?? 'Ẩn danh' }}</div>
           <div class="post-meta">Đăng ngày {{ $post->create_at?->format('d M Y') ?? '---' }}</div>
@@ -25,8 +25,8 @@
       </div>
     </div>
 
-    @if ($post->thumbnail)
-      <img class="post-media" src="{{ $post->thumbnail }}" alt="thumbnail" />
+    @if ($post->thumbnail_url)
+      <img class="post-media" src="{{ $post->thumbnail_url }}" alt="thumbnail" />
     @endif
 
     <div class="article-body">
@@ -40,6 +40,36 @@
         <span class="tag">#{{ $tag->name }}</span>
       @endforeach
     </div>
+
+    <div class="post-actions">
+      <div class="actions-left">
+        <span class="stat">Bình luận: {{ $post->comments_count }}</span>
+        <span class="stat">Thích: <span data-like-count>{{ $post->likes_count }}</span></span>
+        <span class="stat">Chia sẻ: <span data-share-count>{{ $post->shares_count }}</span></span>
+      </div>
+      <div class="actions-right">
+        <button
+          class="btn btn-ghost post-action-btn js-like-btn @if ($post->liked_by_me) is-active @endif"
+          type="button"
+          aria-pressed="{{ $post->liked_by_me ? 'true' : 'false' }}"
+          data-liked="{{ $post->liked_by_me ? '1' : '0' }}"
+          data-like-url="{{ route('articles.likes.store', $post) }}"
+          data-unlike-url="{{ route('articles.likes.destroy', $post) }}"
+        >
+          {{ $post->liked_by_me ? 'Đã thích' : 'Ưa thích' }}
+        </button>
+        <button
+          class="btn btn-ghost post-action-btn js-share-btn @if ($post->shared_by_me) is-active @endif"
+          type="button"
+          data-shared="{{ $post->shared_by_me ? '1' : '0' }}"
+          data-share-url="{{ route('articles.shares.store', $post) }}"
+          data-share-link="{{ route('articles.show', $post) }}"
+          data-share-title="{{ $post->title }}"
+        >
+          {{ $post->shared_by_me ? 'Đã chia sẻ' : 'Chia sẻ' }}
+        </button>
+      </div>
+    </div>
   </article>
 
   <div class="card">
@@ -52,7 +82,7 @@
     <div class="comment-list">
       @forelse ($comments as $comment)
         <div class="comment">
-          <img class="avatar" src="{{ $comment->user?->avatar_url ?? 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=facearea&w=120&h=120&q=80' }}" alt="avatar" />
+          <img class="avatar" src="{{ $comment->user?->avatar_url ?? asset('images/avatar/default-avatar.png') }}" alt="avatar" />
           <div class="comment-content">
             <div class="name">{{ $comment->user?->user_name ?? 'Ẩn danh' }}</div>
             <div class="meta">{{ $comment->create_at?->format('d M Y') ?? '---' }}</div>

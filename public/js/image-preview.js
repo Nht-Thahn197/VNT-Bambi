@@ -18,6 +18,25 @@
     }
   }
 
+  function updateFileName(input) {
+    var targetId = input.dataset.fileNameTarget;
+    if (!targetId) {
+      return;
+    }
+
+    var target = document.getElementById(targetId);
+    if (!target) {
+      return;
+    }
+
+    if (!target.dataset.emptyLabel) {
+      target.dataset.emptyLabel = target.textContent || '';
+    }
+
+    var file = input.files && input.files[0];
+    target.textContent = file ? file.name : target.dataset.emptyLabel;
+  }
+
   function init() {
     document.querySelectorAll('[data-image-preview-input]').forEach(function (input) {
       var targetId = input.dataset.imagePreviewTarget;
@@ -33,7 +52,18 @@
       var link = preview.closest('[data-image-preview-link]');
 
       input.addEventListener('change', function () {
+        updateFileName(input);
         updatePreview(input, preview, link);
+      });
+    });
+
+    document.querySelectorAll('[data-file-name-target]').forEach(function (input) {
+      if (input.dataset.imagePreviewTarget) {
+        return;
+      }
+
+      input.addEventListener('change', function () {
+        updateFileName(input);
       });
     });
   }

@@ -49,13 +49,13 @@ class AdminArticleController extends Controller
 
         $thumbnailPath = null;
         if ($request->hasFile('thumbnail')) {
-            $thumbDir = public_path('uploads/thumbnails');
+            $thumbDir = public_path('images/thumbnail');
             File::ensureDirectoryExists($thumbDir);
 
             $file = $request->file('thumbnail');
             $filename = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
             $file->move($thumbDir, $filename);
-            $thumbnailPath = '/uploads/thumbnails/'.$filename;
+            $thumbnailPath = '/images/thumbnail/'.$filename;
         }
 
         $article = Article::create([
@@ -101,18 +101,24 @@ class AdminArticleController extends Controller
 
         $thumbnailPath = $article->thumbnail;
         if ($request->hasFile('thumbnail')) {
-            $thumbDir = public_path('uploads/thumbnails');
+            $thumbDir = public_path('images/thumbnail');
             File::ensureDirectoryExists($thumbDir);
 
             $file = $request->file('thumbnail');
             $filename = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
             $file->move($thumbDir, $filename);
-            $thumbnailPath = '/uploads/thumbnails/'.$filename;
+            $thumbnailPath = '/images/thumbnail/'.$filename;
 
-            if ($article->thumbnail && str_starts_with($article->thumbnail, '/uploads/thumbnails/')) {
-                $oldPath = public_path(ltrim($article->thumbnail, '/'));
-                if (File::exists($oldPath)) {
-                    File::delete($oldPath);
+            if ($article->thumbnail) {
+                $normalized = ltrim($article->thumbnail, '/');
+                if (
+                    str_starts_with($normalized, 'uploads/thumbnails/')
+                    || str_starts_with($normalized, 'images/thumbnail/')
+                ) {
+                    $oldPath = public_path($normalized);
+                    if (File::exists($oldPath)) {
+                        File::delete($oldPath);
+                    }
                 }
             }
         }
@@ -137,10 +143,16 @@ class AdminArticleController extends Controller
         $article->tags()->detach();
         $article->comments()->delete();
 
-        if ($article->thumbnail && str_starts_with($article->thumbnail, '/uploads/thumbnails/')) {
-            $oldPath = public_path(ltrim($article->thumbnail, '/'));
-            if (File::exists($oldPath)) {
-                File::delete($oldPath);
+        if ($article->thumbnail) {
+            $normalized = ltrim($article->thumbnail, '/');
+            if (
+                str_starts_with($normalized, 'uploads/thumbnails/')
+                || str_starts_with($normalized, 'images/thumbnail/')
+            ) {
+                $oldPath = public_path($normalized);
+                if (File::exists($oldPath)) {
+                    File::delete($oldPath);
+                }
             }
         }
 

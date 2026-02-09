@@ -3,7 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>{{ $title ?? 'BambiBlog' }}</title>
+    <link rel="icon" href="{{ asset('favicon-bambi.ico') }}" />
     <link rel="stylesheet" href="{{ asset('css/blog.css') }}" />
   </head>
   <body>
@@ -83,5 +85,6 @@
     <script src="{{ asset('js/custom-select.js') }}" defer></script>
     <script src="{{ asset('js/user-menu.js') }}" defer></script>
     <script src="{{ asset('js/image-preview.js') }}" defer></script>
+    <script src="{{ asset('js/post-actions.js') }}" defer></script>
   </body>
 </html>

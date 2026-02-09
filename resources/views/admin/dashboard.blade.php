@@ -104,7 +104,7 @@
     <div class="comment-list">
       @foreach ($recent_comments as $comment)
         <div class="comment">
-          <img class="avatar" src="{{ $comment->user?->avatar_url ?? 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=facearea&w=120&h=120&q=80' }}" alt="avatar" />
+          <img class="avatar" src="{{ $comment->user?->avatar_url ?? asset('images/avatar/default-avatar.png') }}" alt="avatar" />
           <div class="comment-content">
             <div class="name">{{ $comment->user?->user_name ?? 'Ẩn danh' }}</div>
             <div class="meta">

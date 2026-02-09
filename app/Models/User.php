@@ -54,11 +54,7 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute(): string
     {
-        $avatar = $this->avatar;
-
-        if (! $avatar) {
-            return 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=facearea&w=120&h=120&q=80';
-        }
+        $avatar = $this->avatar ?: 'images/avatar/default-avatar.png';
 
         if (str_starts_with($avatar, 'http')) {
             return $avatar;
@@ -93,5 +89,15 @@ class User extends Authenticatable
     public function followers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'follows', 'followed_id', 'follower_id');
+    }
+
+    public function likedArticles(): BelongsToMany
+    {
+        return $this->belongsToMany(Article::class, 'article_likes', 'user_id', 'article_id');
+    }
+
+    public function sharedArticles(): BelongsToMany
+    {
+        return $this->belongsToMany(Article::class, 'article_shares', 'user_id', 'article_id');
     }
 }

@@ -12,8 +12,18 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
+        $userId = $request->user()?->id ?? 0;
+
         $query = Article::with(['user', 'category', 'tags'])
-            ->withCount('comments')
+            ->withCount(['comments', 'likes', 'shares'])
+            ->withCount([
+                'likes as liked_by_me' => function ($sub) use ($userId) {
+                    $sub->where('user_id', $userId);
+                },
+                'shares as shared_by_me' => function ($sub) use ($userId) {
+                    $sub->where('user_id', $userId);
+                },
+            ])
             ->where('status', 1);
 
         if ($request->filled('q')) {
