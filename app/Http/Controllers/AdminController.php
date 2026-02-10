@@ -7,13 +7,14 @@ use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $posts = Article::with(['user', 'category'])
-            ->withCount('comments')
+            ->withCount(['visibleComments as comments_count'])
             ->orderByDesc('create_at')
             ->limit(10)
             ->get();
@@ -26,10 +27,15 @@ class AdminController extends Controller
             ->orderByDesc('articles_count')
             ->get();
 
-        $recent_comments = Comment::with(['user', 'article'])
-            ->orderByDesc('create_at')
-            ->limit(6)
-            ->get();
+        $commentFilter = $request->string('comment_filter')->toString();
+        $commentQuery = Comment::with(['user', 'article'])
+            ->orderByDesc('create_at');
+
+        if ($commentFilter === 'hidden') {
+            $commentQuery->where('status', 0);
+        }
+
+        $recent_comments = $commentQuery->limit(6)->get();
 
         $stats = [
             'articles' => Article::count(),
@@ -47,6 +53,7 @@ class AdminController extends Controller
             'categories' => $categories,
             'tags' => $tags,
             'recent_comments' => $recent_comments,
+            'comment_filter' => $commentFilter,
         ]);
     }
 }

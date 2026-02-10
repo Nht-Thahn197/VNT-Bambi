@@ -40,7 +40,15 @@
             <td>
               <div class="table-actions">
                 <a class="btn btn-ghost" href="{{ route('admin.tags.edit', $tag) }}">Sửa</a>
-                <form method="POST" action="{{ route('admin.tags.destroy', $tag) }}">
+                <form
+                  method="POST"
+                  action="{{ route('admin.tags.destroy', $tag) }}"
+                  data-confirm="Xóa tag này?"
+                  data-confirm-title="Xác nhận xóa"
+                  data-confirm-ok="Xóa tag"
+                  data-confirm-ok-class="btn btn-danger"
+                  data-confirm-cancel="Hủy"
+                >
                   @csrf
                   @method('DELETE')
                   <button class="btn btn-danger" type="submit">Xóa</button>

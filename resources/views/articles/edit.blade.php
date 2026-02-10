@@ -67,7 +67,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Thumbnail (tùy chọn)</label>
+        <label>Thumbnail</label>
         @php
           $previewThumbnail = $post->thumbnail_url ?: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
         @endphp

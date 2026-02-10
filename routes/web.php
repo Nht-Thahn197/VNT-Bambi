@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminArticleController;
+use App\Http\Controllers\AdminCommentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
@@ -46,4 +47,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('articles', AdminArticleController::class)->except(['show']);
     Route::resource('categories', CategoryController::class)->except(['show']);
     Route::resource('tags', TagController::class)->except(['show']);
+    Route::patch('comments/{comment}/hide', [AdminCommentController::class, 'hide'])->name('comments.hide');
+    Route::patch('comments/{comment}/unhide', [AdminCommentController::class, 'unhide'])->name('comments.unhide');
+    Route::delete('comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
 });

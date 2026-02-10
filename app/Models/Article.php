@@ -41,6 +41,11 @@ class Article extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function visibleComments(): HasMany
+    {
+        return $this->hasMany(Comment::class)->where('status', 1);
+    }
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);

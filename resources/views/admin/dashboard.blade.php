@@ -59,7 +59,15 @@
             <td>
               <div class="table-actions">
                 <a class="btn btn-ghost" href="{{ route('admin.articles.edit', $post) }}">Sửa</a>
-                <form method="POST" action="{{ route('admin.articles.destroy', $post) }}">
+                <form
+                  method="POST"
+                  action="{{ route('admin.articles.destroy', $post) }}"
+                  data-confirm="Xóa bài viết này?"
+                  data-confirm-title="Xác nhận xóa"
+                  data-confirm-ok="Xóa bài"
+                  data-confirm-ok-class="btn btn-danger"
+                  data-confirm-cancel="Hủy"
+                >
                   @csrf
                   @method('DELETE')
                   <button class="btn btn-danger" type="submit">Xóa</button>
@@ -99,22 +107,55 @@
   <section class="card" id="comments" style="margin-top: 24px;">
     <div class="content-header">
       <h3>Quản lý bình luận</h3>
-      <button class="btn btn-outline">Lọc vi phạm</button>
+      @if (($comment_filter ?? '') === 'hidden')
+        <a class="btn btn-outline" href="{{ route('admin.dashboard') }}#comments">Xem tất cả</a>
+      @else
+        <a class="btn btn-outline" href="{{ route('admin.dashboard', ['comment_filter' => 'hidden']) }}#comments">
+          Lọc vi phạm
+        </a>
+      @endif
     </div>
     <div class="comment-list">
       @foreach ($recent_comments as $comment)
-        <div class="comment">
+        <div class="comment @if (! $comment->status) is-hidden @endif">
           <img class="avatar" src="{{ $comment->user?->avatar_url ?? asset('images/avatar/default-avatar.png') }}" alt="avatar" />
           <div class="comment-content">
             <div class="name">{{ $comment->user?->user_name ?? 'Ẩn danh' }}</div>
             <div class="meta">
               {{ $comment->create_at?->format('d M Y') ?? '---' }} · {{ $comment->article?->title ?? 'Bài viết' }}
             </div>
+            @if (! $comment->status)
+              <span class="pill orange">Đã ẩn</span>
+            @endif
             <div>{{ $comment->content }}</div>
           </div>
           <div class="table-actions">
-            <button class="btn btn-ghost">Ẩn</button>
-            <button class="btn btn-danger">Xóa</button>
+            @if ($comment->status)
+              <form method="POST" action="{{ route('admin.comments.hide', $comment) }}">
+                @csrf
+                @method('PATCH')
+                <button class="btn btn-ghost" type="submit">Ẩn</button>
+              </form>
+            @else
+              <form method="POST" action="{{ route('admin.comments.unhide', $comment) }}">
+                @csrf
+                @method('PATCH')
+                <button class="btn btn-outline" type="submit">Bỏ ẩn</button>
+              </form>
+            @endif
+            <form
+              method="POST"
+              action="{{ route('admin.comments.destroy', $comment) }}"
+              data-confirm="Xóa bình luận này?"
+              data-confirm-title="Xác nhận xóa"
+              data-confirm-ok="Xóa bình luận"
+              data-confirm-ok-class="btn btn-danger"
+              data-confirm-cancel="Hủy"
+            >
+              @csrf
+              @method('DELETE')
+              <button class="btn btn-danger" type="submit">Xóa</button>
+            </form>
           </div>
         </div>
       @endforeach

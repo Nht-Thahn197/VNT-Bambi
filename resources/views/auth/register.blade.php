@@ -45,7 +45,7 @@
       />
     </div>
     <div class="form-group">
-      <label>Avatar (tùy chọn)</label>
+      <label>Avatar</label>
       @php
         $defaultAvatar = asset('images/avatar/default-avatar.png');
       @endphp

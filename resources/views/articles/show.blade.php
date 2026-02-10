@@ -20,9 +20,6 @@
           <div class="post-meta">Đăng ngày {{ $post->create_at?->format('d M Y') ?? '---' }}</div>
         </div>
       </div>
-      <div class="actions-right">
-        <span class="stat">Bình luận: {{ $post->comments_count }}</span>
-      </div>
     </div>
 
     @if ($post->thumbnail_url)
@@ -73,7 +70,7 @@
   </article>
 
   <div class="card">
-    <h3>Binh luan ({{ $comments->count() }})</h3>
+    <h3>Bình luận ({{ $comments->count() }})</h3>
     @if (session('success'))
       <div class="post-meta" style="color: #0f5132; font-weight: 600; margin-bottom: 12px;">
         {{ session('success') }}

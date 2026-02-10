@@ -59,7 +59,16 @@
               </button>
               <div class="user-menu__panel post-menu__panel" role="menu">
                 <a href="{{ route('articles.edit', $post) }}" role="menuitem">Sửa bài viết</a>
-                <form method="POST" action="{{ route('articles.destroy', $post) }}" role="none" onsubmit="return confirm('Xóa bài viết này?')">
+                <form
+                  method="POST"
+                  action="{{ route('articles.destroy', $post) }}"
+                  role="none"
+                  data-confirm="Xóa bài viết này?"
+                  data-confirm-title="Xác nhận xóa"
+                  data-confirm-ok="Xóa bài"
+                  data-confirm-ok-class="btn btn-danger"
+                  data-confirm-cancel="Hủy"
+                >
                   @csrf
                   @method('DELETE')
                   <button class="user-menu__danger" type="submit" role="menuitem">Xóa bài viết</button>
@@ -183,7 +192,15 @@
                 {{ $post->shared_by_me ? 'Đã chia sẻ' : 'Chia sẻ' }}
               </button>
               <a class="btn btn-outline" href="{{ route('articles.show', $post) }}">Đọc tiếp</a>
-              <form method="POST" action="{{ route('articles.shares.destroy', $post) }}" onsubmit="return confirm('Bỏ chia sẻ bài viết này?')">
+              <form
+                method="POST"
+                action="{{ route('articles.shares.destroy', $post) }}"
+                data-confirm="Bỏ chia sẻ bài viết này?"
+                data-confirm-title="Xác nhận bỏ chia sẻ"
+                data-confirm-ok="Bỏ chia sẻ"
+                data-confirm-ok-class="btn btn-danger"
+                data-confirm-cancel="Hủy"
+              >
                 @csrf
                 @method('DELETE')
                 <button class="btn btn-danger" type="submit">Bỏ chia sẻ</button>

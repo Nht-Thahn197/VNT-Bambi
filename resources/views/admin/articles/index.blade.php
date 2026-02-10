@@ -48,7 +48,15 @@
             <td>
               <div class="table-actions">
                 <a class="btn btn-ghost" href="{{ route('admin.articles.edit', $article) }}">Sửa</a>
-                <form method="POST" action="{{ route('admin.articles.destroy', $article) }}">
+                <form
+                  method="POST"
+                  action="{{ route('admin.articles.destroy', $article) }}"
+                  data-confirm="Xóa bài viết này?"
+                  data-confirm-title="Xác nhận xóa"
+                  data-confirm-ok="Xóa bài"
+                  data-confirm-ok-class="btn btn-danger"
+                  data-confirm-cancel="Hủy"
+                >
                   @csrf
                   @method('DELETE')
                   <button class="btn btn-danger" type="submit">Xóa</button>

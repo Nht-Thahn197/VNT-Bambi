@@ -717,6 +717,10 @@ img {
   margin-bottom: 4px;
 }
 
+.comment.is-hidden .comment-content {
+  opacity: 0.65;
+}
+
 .form-group {
   display: grid;
   gap: 8px;
@@ -944,6 +948,72 @@ img {
   padding: 20px 0 40px;
   color: var(--muted);
   font-size: 13px;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.confirm-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  z-index: 60;
+}
+
+.confirm-modal.is-open {
+  display: flex;
+}
+
+.confirm-modal__dialog {
+  width: min(420px, 92vw);
+  background: var(--surface);
+  border-radius: 20px;
+  border: 1px solid rgba(215, 224, 238, 0.9);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+  animation: confirmPop 0.2s ease;
+}
+
+.confirm-modal__title {
+  margin: 0;
+  font-family: 'Newsreader', serif;
+  font-size: 22px;
+}
+
+.confirm-modal__message {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.confirm-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.confirm-modal__actions .btn {
+  min-width: 120px;
+}
+
+@keyframes confirmPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @media (max-width: 1100px) {

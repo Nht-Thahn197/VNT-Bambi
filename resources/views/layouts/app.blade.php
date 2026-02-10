@@ -82,6 +82,23 @@
     <footer class="footer">
       <div class="container">BambiBlog · Kết nối cộng đồng, lan tỏa tri thức.</div>
     </footer>
+    <div class="confirm-modal" data-confirm-modal aria-hidden="true">
+      <div
+        class="confirm-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirmModalTitle"
+        aria-describedby="confirmModalDesc"
+      >
+        <h3 class="confirm-modal__title" id="confirmModalTitle" data-confirm-title>Xác nhận</h3>
+        <p class="confirm-modal__message" id="confirmModalDesc" data-confirm-message></p>
+        <div class="confirm-modal__actions">
+          <button type="button" class="btn btn-outline" data-confirm-cancel>Hủy</button>
+          <button type="button" class="btn btn-primary" data-confirm-ok>Đồng ý</button>
+        </div>
+      </div>
+    </div>
+    <script src="{{ asset('js/confirm-modal.js') }}" defer></script>
     <script src="{{ asset('js/custom-select.js') }}" defer></script>
     <script src="{{ asset('js/user-menu.js') }}" defer></script>
     <script src="{{ asset('js/image-preview.js') }}" defer></script>

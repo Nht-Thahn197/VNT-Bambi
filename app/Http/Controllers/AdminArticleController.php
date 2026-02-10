@@ -16,7 +16,7 @@ class AdminArticleController extends Controller
     public function index()
     {
         $articles = Article::with(['user', 'category', 'tags'])
-            ->withCount('comments')
+            ->withCount(['visibleComments as comments_count'])
             ->orderByDesc('create_at')
             ->get();
 

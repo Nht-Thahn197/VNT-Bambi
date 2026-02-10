@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th2 07, 2026 lúc 03:16 PM
+-- Thời gian đã tạo: Th2 10, 2026 lúc 08:07 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -43,7 +43,8 @@ CREATE TABLE `articles` (
 --
 
 INSERT INTO `articles` (`id`, `title`, `content`, `thumbnail`, `create_at`, `status`, `user_id`, `category_id`) VALUES
-(1, 'Introduction to Laravel', 'Laravel is a popular PHP framework...', NULL, '2026-02-04 09:30:24', 1, 1, 1);
+(1, 'Introduction to Laravel', 'Laravel is a popular PHP framework...', NULL, '2026-02-04 09:30:24', 1, 1, 1),
+(3, 'What is the Laravel Framework?', 'Laravel is a free, open-source PHP framework built to support the development of software and applications using the MVC architecture. Currently, Laravel is the most popular and best PHP framework.', '/images/thumbnail/15954dea-33e7-4b3f-ac0c-234491fb9dcb.jpg', '2026-02-10 06:49:01', 1, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -56,6 +57,16 @@ CREATE TABLE `article_likes` (
   `article_id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `article_likes`
+--
+
+INSERT INTO `article_likes` (`id`, `article_id`, `user_id`) VALUES
+(5, 1, 1),
+(4, 1, 2),
+(6, 2, 1),
+(3, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -74,7 +85,7 @@ CREATE TABLE `article_shares` (
 --
 
 INSERT INTO `article_shares` (`id`, `article_id`, `user_id`) VALUES
-(1, 1, 1);
+(2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -92,7 +103,8 @@ CREATE TABLE `article_tag` (
 --
 
 INSERT INTO `article_tag` (`article_id`, `tag_id`) VALUES
-(1, 1);
+(1, 1),
+(3, 2);
 
 -- --------------------------------------------------------
 
@@ -111,7 +123,8 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`, `description`) VALUES
-(1, 'Programming', NULL);
+(1, 'Programming', NULL),
+(2, 'Laravel', NULL);
 
 -- --------------------------------------------------------
 
@@ -124,15 +137,16 @@ CREATE TABLE `comments` (
   `content` text NOT NULL,
   `create_at` datetime DEFAULT current_timestamp(),
   `user_id` int(11) NOT NULL,
-  `article_id` int(11) NOT NULL
+  `article_id` int(11) NOT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `comments`
 --
 
-INSERT INTO `comments` (`id`, `content`, `create_at`, `user_id`, `article_id`) VALUES
-(1, 'hmmm', '2026-02-04 10:17:03', 1, 1);
+INSERT INTO `comments` (`id`, `content`, `create_at`, `user_id`, `article_id`, `status`) VALUES
+(1, 'hmmm', '2026-02-04 10:17:03', 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -162,6 +176,7 @@ CREATE TABLE `tags` (
 --
 
 INSERT INTO `tags` (`id`, `name`) VALUES
+(2, 'Laravel'),
 (1, 'PHP');
 
 -- --------------------------------------------------------
@@ -185,7 +200,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `user_name`, `email`, `password`, `role`, `avatar`, `status`) VALUES
-(1, 'Nhật Thành', 'npnthanh.03@gmail.com', '$2y$12$H823O4BNCPKyWzxFo4zJsOSFQL9b.z2vKYUQ6ZuIAHJWNLyow8eSC', 'admin', 'images/avatar/9caabbb3-bed1-4989-b4c5-d0499b7d4af6.jpg', 1);
+(1, 'Nhật Thành', 'npnthanh.03@gmail.com', '$2y$12$H823O4BNCPKyWzxFo4zJsOSFQL9b.z2vKYUQ6ZuIAHJWNLyow8eSC', 'admin', 'images/avatar/9caabbb3-bed1-4989-b4c5-d0499b7d4af6.jpg', 1),
+(2, 'Văn Nam', 'VN@gmail.com', '$2y$12$MTfvnSH8EzPtpM7.1ycUuOhndoMi/FWo/gRb.6Ad/SEE7iuhj.6Vu', 'user', 'images/avatar/default-avatar.png', 1);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -268,25 +284,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT cho bảng `articles`
 --
 ALTER TABLE `articles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT cho bảng `article_likes`
 --
 ALTER TABLE `article_likes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT cho bảng `article_shares`
 --
 ALTER TABLE `article_shares`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `comments`
@@ -304,13 +320,13 @@ ALTER TABLE `follows`
 -- AUTO_INCREMENT cho bảng `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

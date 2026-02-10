@@ -17,7 +17,7 @@ class ProfileController extends Controller
         $userId = $user?->id ?? 0;
 
         $baseQuery = Article::with(['user', 'category', 'tags'])
-            ->withCount(['comments', 'likes', 'shares'])
+            ->withCount(['visibleComments as comments_count', 'likes', 'shares'])
             ->withCount([
                 'likes as liked_by_me' => function ($sub) use ($userId) {
                     $sub->where('user_id', $userId);
@@ -35,7 +35,7 @@ class ProfileController extends Controller
         $sharedPosts = $user
             ? $user->sharedArticles()
                 ->with(['user', 'category', 'tags'])
-                ->withCount(['comments', 'likes', 'shares'])
+                ->withCount(['visibleComments as comments_count', 'likes', 'shares'])
                 ->withCount([
                     'likes as liked_by_me' => function ($sub) use ($userId) {
                         $sub->where('user_id', $userId);

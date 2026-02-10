@@ -12,12 +12,14 @@ class Comment extends Model
         'create_at',
         'user_id',
         'article_id',
+        'status',
     ];
 
     public $timestamps = false;
 
     protected $casts = [
         'create_at' => 'datetime',
+        'status' => 'integer',
     ];
 
     public function user(): BelongsTo

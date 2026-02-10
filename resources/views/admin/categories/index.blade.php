@@ -42,7 +42,15 @@
             <td>
               <div class="table-actions">
                 <a class="btn btn-ghost" href="{{ route('admin.categories.edit', $category) }}">Sửa</a>
-                <form method="POST" action="{{ route('admin.categories.destroy', $category) }}">
+                <form
+                  method="POST"
+                  action="{{ route('admin.categories.destroy', $category) }}"
+                  data-confirm="Xóa danh mục này?"
+                  data-confirm-title="Xác nhận xóa"
+                  data-confirm-ok="Xóa danh mục"
+                  data-confirm-ok-class="btn btn-danger"
+                  data-confirm-cancel="Hủy"
+                >
                   @csrf
                   @method('DELETE')
                   <button class="btn btn-danger" type="submit">Xóa</button>
